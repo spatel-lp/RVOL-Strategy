@@ -101,7 +101,9 @@ jobs:
         run: python notify.py "$MSG"
 
       - name: Commit state and dashboard
+        if: steps.pick.outputs.job != 'broker-check'      # the check reads your account and writes nothing
         run: |
+          mkdir -p state docs                              # git add fails on a path that does not exist (empty folders are not stored by git)
           git config user.name  "paper-trading-bot"
           git config user.email "paper-trading-bot@users.noreply.github.com"
           git add state docs
