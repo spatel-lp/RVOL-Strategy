@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ORH Desk · Paper Trading</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --ink:#14181f; --muted:#5b6573; --line:#e3e6eb;
+  --up:#0b7a43; --down:#c22a2a; --accent:#2457d6; --warn-bg:#fff4d6; --warn-ink:#6b4a00; --chip:#eef1f6;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0e1116; --card:#171b22; --ink:#e9edf3; --muted:#9aa5b4; --line:#262c36;
+         --up:#3ccf84; --down:#ff6b6b; --accent:#7aa2ff; --warn-bg:#3a2f0b; --warn-ink:#ffd98a; --chip:#222834; }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+h1{font-size:20px;margin:0}
+h2{font-size:15px;margin:0 0 10px;letter-spacing:.2px}
+.sub{color:var(--muted);font-size:13px}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;background:var(--chip);font-size:12px;color:var(--muted)}
+.pill.ok{color:var(--up)} .pill.bad{color:var(--down)}
+.banner{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:14px}
+.banner.demo{background:var(--accent);color:#fff;font-weight:600}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));margin-bottom:12px}
+.kpi,.card{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.kpi{padding:10px 12px}
+.kpi .l{color:var(--muted);font-size:12px}
+.kpi .v{font-size:21px;font-weight:650;font-variant-numeric:tabular-nums}
+.card{padding:14px;margin-bottom:12px}
+.up{color:var(--up)} .down{color:var(--down)} .muted{color:var(--muted)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px}
+tr:last-child td{border-bottom:0}
+.sym{font-weight:650}
+.empty{color:var(--muted);padding:6px 0}
+details{margin:0 0 12px}
+summary{cursor:pointer;font-weight:600;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+details[open] summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+details .body{background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;padding:12px 14px}
+.log{max-height:300px;overflow:auto;font-size:13px}
+.log div{padding:4px 0;border-bottom:1px solid var(--line)}
+.log .t{color:var(--muted);margin-right:8px}
+svg{width:100%;height:auto;display:block}
+.chip{display:inline-block;background:var(--chip);border-radius:6px;padding:1px 6px;margin:0 4px 2px 0;font-size:12px}
+ul.rules{margin:0;padding-left:18px}
+.bar{height:8px;background:var(--chip);border-radius:4px;overflow:hidden;margin-top:3px}
+.bar>i{display:block;height:100%;background:var(--accent)}
+.bar.warn>i{background:var(--down)}
+.meters{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.meter .l{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.meter .v{font-weight:600;color:var(--ink)}
+.note{font-size:13px;color:var(--muted);margin:8px 0 0}
+footer{color:var(--muted);font-size:12px;margin:18px 0 8px}
+@media (max-width:600px){
+  table.stack thead{display:none}
+  table.stack tr{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  table.stack td{border:0;padding:2px 0;text-align:left;white-space:normal}
+  table.stack td::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px}
+  table.stack td:first-child{grid-column:1/-1;font-size:16px}
+  table.stack td:first-child::before{content:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>ORH Desk &middot; Paper Trading</h1><div class="sub" id="sub"></div></div>
+    <div id="status"></div>
+  </header>
+  <div id="banners"></div>
+  <div class="grid" id="kpis"></div>
+  <div class="card"><h2>Equity curve</h2><div id="curve"></div></div>
+  <div class="card"><h2>Market regime <span class="sub">&middot; gates every new entry</span></h2><div id="regime"></div></div>
+  <div class="card"><h2>Risk controls</h2><div id="risk"></div></div>
+  <div class="card"><h2>Evidence <span class="sub">&middot; how much do the closed trades prove?</span></h2><div id="evidence"></div></div>
+  <div class="card"><h2>Open positions</h2><div class="scroll" id="positions"></div></div>
+  <div class="card"><h2>Focus list <span class="sub" id="focusSub"></span></h2><div class="scroll" id="focus"></div></div>
+  <details><summary>Stalk list</summary><div class="body scroll" id="stalk"></div></details>
+  <details><summary>Mean-reversion list</summary><div class="body scroll" id="mr"></div></details>
+  <div class="card"><h2>Closed trades</h2><div class="scroll" id="closed"></div></div>
+  <details><summary>Filter audit: what rejected signals did next</summary><div class="body scroll" id="audit"></div></details>
+  <details><summary>Exit-variant lab</summary><div class="body scroll" id="lab"></div></details>
+  <details><summary>Alpaca paper mirror</summary><div class="body" id="broker"></div></details>
+  <details><summary>Data health &amp; universe</summary><div class="body" id="health"></div></details>
+  <div class="card"><h2>Activity</h2><div class="log" id="events"></div></div>
+  <details><summary>Rules &amp; limits in force</summary><div class="body" id="rules"></div></details>
+  <footer>Paper trading simulation. Not financial advice. Prices come from Yahoo Finance via yfinance (unofficial, can lag or have gaps). Fills are simulated, not executed.</footer>
+</div>
+<script id="data" type="application/json">{"demo":true,"summary":{"equity":100101.1,"return_pct":0.1,"cash":95929.91,"closed_trades":1,"open_positions":1,"win_rate":1.0,"avg_r":1.069,"avg_win_r":1.069,"avg_loss_r":null,"profit_factor":999.0,"max_drawdown_pct":-0.2,"open_risk_usd":33.09,"open_risk_pct":0.03,"evidence":{"n":1,"target":100,"progress_pct":1.0,"mean_r":1.069,"ci_low":null,"ci_high":null,"p_positive":null},"avg_mfe_r":4.46,"avg_mae_r":0.0,"capture_ratio":0.24},"initial_equity":100000.0,"positions":[{"symbol":"FAS","entry_date":"2026-11-02","entry":86.89967999999999,"last":86.89967999999999,"r_now":0.0,"pnl":0.0,"day":0,"remaining":48,"size":48,"stops":[[86.56,16],[86.21,16],[85.87,16]],"last_note":"risk x0.25 (regime stretched: 5 up-closes in a row)","source":"paper-orh","mfe":0.0,"mae":0.0,"industry":"Software","lev":3.0}],"closed":[{"symbol":"CURE","entry_date":"2026-10-23","exit_date":"2026-10-30","entry":286.75584000000003,"exit":286.75584000000003,"r":1.07,"pnl":105.84,"mfe":4.46,"mae":0.0,"note":"Closed: Hit stop(s)"}],"curve":[{"date":"2026-10-22","equity":100000.0,"cash":100000.0},{"date":"2026-10-23","equity":100023.49,"cash":91674.57},{"date":"2026-10-26","equity":100090.28,"cash":91674.57},{"date":"2026-10-27","equity":100188.25,"cash":94314.66},{"date":"2026-10-28","equity":100256.69,"cash":96095.84},{"date":"2026-10-29","equity":100306.62,"cash":96095.84},{"date":"2026-10-30","equity":100105.84,"cash":100105.84},{"date":"2026-11-02","equity":100101.1,"cash":95929.91}],"scan":{"date":"2026-10-30","asof":"2026-10-30T16:30-04:00","n_universe":60,"market":[{"symbol":"SPY","close":129.82,"above_20":true,"above_50":true,"ext":4.3},{"symbol":"QQQ","close":206.83,"above_20":false,"above_50":false,"ext":-1.7}],"focus":[{"symbol":"LRCX","score":0.381,"close":132.42,"ADR%":2.7,"RVOL":1.27,"VCP":0.68,"ATR_ext":4.0,"MR":0.2,"VARS":13.3,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.89,"chop":"","ATR":3.837,"AvgVol50":2025375.0,"flag":"","earn":""},{"symbol":"FAS","score":0.601,"close":86.21,"ADR%":3.1,"RVOL":0.57,"VCP":0.59,"ATR_ext":4.0,"MR":0.2,"VARS":93.3,"daily_ok":false,"trend_ok":true,"LEV":"Y","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.84,"chop":"","ATR":2.707,"AvgVol50":1811596.0,"flag":"","earn":""},{"symbol":"AAPB","score":0.48,"close":251.81,"ADR%":2.8,"RVOL":1.47,"VCP":0.59,"ATR_ext":3.4,"MR":0.2,"VARS":61.7,"daily_ok":false,"trend_ok":true,"LEV":"Y","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.81,"chop":"","ATR":8.2835,"AvgVol50":1943416.0,"flag":"","earn":""},{"symbol":"LSCC","score":0.424,"close":178.87,"ADR%":2.6,"RVOL":1.1,"VCP":0.56,"ATR_ext":2.9,"MR":0.2,"VARS":76.7,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.81,"chop":"","ATR":5.1988,"AvgVol50":1986008.0,"flag":"","earn":""},{"symbol":"AAPU","score":0.524,"close":319.93,"ADR%":2.7,"RVOL":0.83,"VCP":0.55,"ATR_ext":3.4,"MR":0.05,"VARS":83.3,"daily_ok":false,"trend_ok":true,"LEV":"Y","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.85,"chop":"","ATR":11.1326,"AvgVol50":1770536.0,"flag":"","earn":""},{"symbol":"PLTR","score":0.507,"close":276.8,"ADR%":3.1,"RVOL":1.34,"VCP":0.5,"ATR_ext":3.6,"MR":0.4,"VARS":88.3,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.72,"chop":"","ATR":8.595,"AvgVol50":1886448.0,"flag":"","earn":""},{"symbol":"NOW","score":0.389,"close":242.27,"ADR%":2.8,"RVOL":0.47,"VCP":0.49,"ATR_ext":2.8,"MR":0.4,"VARS":81.7,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.77,"chop":"","ATR":7.619,"AvgVol50":1912079.0,"flag":"","earn":""}],"stalk":[{"symbol":"FAS","score":0.601,"close":86.21,"ADR%":3.1,"RVOL":0.57,"VCP":0.59,"ATR_ext":4.0,"MR":0.2,"VARS":93.3,"daily_ok":false,"trend_ok":true,"LEV":"Y","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.84,"chop":"","ATR":2.707,"AvgVol50":1811596.0,"flag":""},{"symbol":"ONON","score":0.545,"close":230.08,"ADR%":2.7,"RVOL":0.77,"VCP":0.4,"ATR_ext":3.9,"MR":0.0,"VARS":100.0,"daily_ok":false,"trend_ok":false,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.74,"chop":"","ATR":7.7163,"AvgVol50":1818589.0,"flag":""},{"symbol":"AAPU","score":0.524,"close":319.93,"ADR%":2.7,"RVOL":0.83,"VCP":0.55,"ATR_ext":3.4,"MR":0.05,"VARS":83.3,"daily_ok":false,"trend_ok":true,"LEV":"Y","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.85,"chop":"","ATR":11.1326,"AvgVol50":1770536.0,"flag":""},{"symbol":"VRT","score":0.512,"close":312.49,"ADR%":2.8,"RVOL":1.01,"VCP":0.53,"ATR_ext":3.2,"MR":0.2,"VARS":90.0,"daily_ok":false,"trend_ok":false,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.92,"chop":"","ATR":10.0951,"AvgVol50":1936668.0,"flag":""},{"symbol":"PLTR","score":0.507,"close":276.8,"ADR%":3.1,"RVOL":1.34,"VCP":0.5,"ATR_ext":3.6,"MR":0.4,"VARS":88.3,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.72,"chop":"","ATR":8.595,"AvgVol50":1886448.0,"flag":""},{"symbol":"HUBS","score":0.497,"close":116.05,"ADR%":2.7,"RVOL":1.28,"VCP":0.38,"ATR_ext":3.9,"MR":0.0,"VARS":86.7,"daily_ok":false,"trend_ok":false,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.94,"chop":"","ATR":4.109,"AvgVol50":1837254.0,"flag":""},{"symbol":"AAPB","score":0.48,"close":251.81,"ADR%":2.8,"RVOL":1.47,"VCP":0.59,"ATR_ext":3.4,"MR":0.2,"VARS":61.7,"daily_ok":false,"trend_ok":true,"LEV":"Y","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.81,"chop":"","ATR":8.2835,"AvgVol50":1943416.0,"flag":""},{"symbol":"ANF","score":0.473,"close":110.54,"ADR%":2.6,"RVOL":1.65,"VCP":0.69,"ATR_ext":3.4,"MR":0.2,"VARS":73.3,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.55,"chop":"choppy trend (R2 0.55 < 0.60)","ATR":3.1493,"AvgVol50":1764651.0,"flag":""},{"symbol":"MDB","score":0.461,"close":133.64,"ADR%":2.6,"RVOL":0.57,"VCP":0.69,"ATR_ext":3.0,"MR":0.05,"VARS":75.0,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.31,"chop":"choppy trend (R2 0.31 < 0.60)","ATR":4.1647,"AvgVol50":2047281.0,"flag":""},{"symbol":"LSCC","score":0.424,"close":178.87,"ADR%":2.6,"RVOL":1.1,"VCP":0.56,"ATR_ext":2.9,"MR":0.2,"VARS":76.7,"daily_ok":false,"trend_ok":true,"LEV":"","mcap_B":5.0,"sector":"Tech","industry":"Software","LIN":0.81,"chop":"","ATR":5.1988,"AvgVol50":1986008.0,"flag":""}],"mr":[]},"intraday":{"asof":"2026-11-02T10:45","checked":[{"symbol":"LRCX","passed":false,"reason":"Price still below ORH"},{"symbol":"FAS","passed":true,"reason":"entered: M30 Re-ORH confirmed | 44% of avg day's volume by trigger bar (no profile) | Tight LoD/ATR 0.32"},{"symbol":"AAPB","passed":false,"reason":"Price still below ORH"},{"symbol":"LSCC","passed":false,"reason":"Price still below ORH"},{"symbol":"AAPU","passed":false,"reason":"Price still below ORH"},{"symbol":"PLTR","passed":false,"reason":"Price still below ORH"},{"symbol":"NOW","passed":false,"reason":"Price still below ORH"}]},"regime":{"label":"stretched","mult":0.5,"reasons":["5 up-closes in a row"],"pct20":66.7,"pct50":73.3,"net_hl":13.3,"n":60,"spy":{"above20":true,"above50":true,"ext":4.25,"streak":5,"close":129.82},"date":"2026-10-30","asof":"2026-10-30T16:30-04:00"},"broker":{"orders":{"CURE":{"status":"filled","buy_id":"ord1","qty":29,"filled":29,"avg_price":286.9566,"date":"2026-10-23","stops":[{"id":"ord10","qty":3,"stop":286.76},{"id":"ord11","qty":5,"stop":286.76},{"id":"ord12","qty":6,"stop":286.76}],"exits":[{"id":"ord5","qty":9,"why":"2R partial"},{"id":"ord9","qty":6,"why":"Day3 reduction"}]},"FAS":{"status":"filled","buy_id":"ord13","qty":48,"filled":48,"avg_price":86.9605,"date":"2026-11-02","stops":[{"id":"ord14","qty":16,"stop":86.56},{"id":"ord15","qty":16,"stop":86.21},{"id":"ord16","qty":16,"stop":85.87}]}},"fills":[{"t":"2026-10-24T00:26:01","symbol":"CURE","side":"buy","qty":29,"sim_price":286.7558,"broker_price":286.9566,"diff_pct":0.07,"modeled_slip_pct":0.064},{"t":"2026-10-24T00:26:15","symbol":"FAS","side":"buy","qty":48,"sim_price":86.8997,"broker_price":86.9605,"diff_pct":0.07,"modeled_slip_pct":0.064}],"log":[{"t":"2026-10-24T00:26:01","action":"buy","detail":"CURE x29 market -> filled, filled qty 29 @ 286.96","sent":true},{"t":"2026-10-24T00:26:01","action":"stop","detail":"CURE x9 stop 285.63 GTC","sent":true},{"t":"2026-10-24T00:26:01","action":"stop","detail":"CURE x9 stop 284.47 GTC","sent":true},{"t":"2026-10-24T00:26:01","action":"stop","detail":"CURE x11 stop 283.34 GTC","sent":true},{"t":"2026-10-24T00:26:08","action":"sell","detail":"CURE x9 market (2R partial)","sent":true},{"t":"2026-10-24T00:26:08","action":"stop","detail":"CURE x5 stop 285.63 GTC","sent":true},{"t":"2026-10-24T00:26:08","action":"stop","detail":"CURE x7 stop 284.47 GTC","sent":true},{"t":"2026-10-24T00:26:08","action":"stop","detail":"CURE x8 stop 283.34 GTC","sent":true},{"t":"2026-10-24T00:26:10","action":"sell","detail":"CURE x6 market (Day3 reduction)","sent":true},{"t":"2026-10-24T00:26:10","action":"stop","detail":"CURE x3 stop 286.76 GTC","sent":true},{"t":"2026-10-24T00:26:10","action":"stop","detail":"CURE x5 stop 286.76 GTC","sent":true},{"t":"2026-10-24T00:26:10","action":"stop","detail":"CURE x6 stop 286.76 GTC","sent":true},{"t":"2026-10-24T00:26:15","action":"buy","detail":"FAS x48 market -> filled, filled qty 48 @ 86.96","sent":true},{"t":"2026-10-24T00:26:15","action":"stop","detail":"FAS x16 stop 86.56 GTC","sent":true},{"t":"2026-10-24T00:26:15","action":"stop","detail":"FAS x16 stop 86.21 GTC","sent":true},{"t":"2026-10-24T00:26:15","action":"stop","detail":"FAS x16 stop 85.87 GTC","sent":true}],"errors":[],"mode":"send","account":{"equity":100000.0,"cash":95736.77181568,"buying_power":191473.54363136,"status":"ACTIVE","blocked":false},"equity_gap_pct":-0.11,"recon":{"asof":"2026-10-24T00:26:15","rows":[{"symbol":"FAS","sim_qty":48,"broker_qty":48,"status":"ok"}],"ok":true,"mode":"send"},"asof":"2026-10-24T00:26:15","seq":14},"risk":{"dd_pct":0.2,"mult":1.0,"day_loss_pct":0.0,"halted":false,"reasons":[],"open_risk_pct":0.03,"open_risk_cap_pct":1.0,"lev_exposure_pct":12.5,"lev_cap_pct":60.0,"industries":{"Financials Basket":1},"sectors":{"Financial Services":1},"max_industry":2,"max_sector":3,"corr_pairs":[]},"audit":[{"kind":"reject","reason":"choppy trend (low linearity)","n":67,"resolved":21,"avg_fwd_pct":1.86,"median_fwd_pct":1.68,"win_pct":71.0,"avg_mfe_atr":1.03,"avg_mae_atr":-0.92,"verdict":"too few to judge"},{"kind":"reject","reason":"extended beyond 4x ATR%","n":47,"resolved":10,"avg_fwd_pct":1.26,"median_fwd_pct":-0.03,"win_pct":50.0,"avg_mfe_atr":1.01,"avg_mae_atr":-0.86,"verdict":"too few to judge"},{"kind":"reject","reason":"not above 10/20-MA","n":32,"resolved":8,"avg_fwd_pct":2.71,"median_fwd_pct":2.25,"win_pct":75.0,"avg_mfe_atr":1.37,"avg_mae_atr":-0.4,"verdict":"too few to judge"},{"kind":"focus","reason":"on focus list","n":47,"resolved":14,"avg_fwd_pct":2.56,"median_fwd_pct":2.73,"win_pct":79.0,"avg_mfe_atr":1.31,"avg_mae_atr":-0.6,"verdict":"too few to judge"},{"kind":"orh_skip","reason":"price below ORH","n":11,"resolved":5,"avg_fwd_pct":1.37,"median_fwd_pct":3.11,"win_pct":60.0,"avg_mfe_atr":1.75,"avg_mae_atr":-0.44,"verdict":"too few to judge"},{"kind":"taken","reason":"entered","n":2,"resolved":1,"avg_fwd_pct":-2.0,"median_fwd_pct":-2.0,"win_pct":0.0,"avg_mfe_atr":1.67,"avg_mae_atr":-0.94,"verdict":"too few to judge"}],"datacheck":{"asof":"2026-10-30T16:30-04:00","sanity":{},"crosscheck":{"checked":0,"ok":0,"mismatched":[],"unavailable":["CURE","LRCX","CELH","FAS","PLTR","AAPB","AAPU","AEIS","AEO","AI","AMD","AMDL"]},"last_crosscheck":"2026-10-29","earnings_unknown":[]},"universe":{"source":"handpicked","date":null,"n":60,"note":"hand-picked list (survivorship bias)"},"exit_lab":{},"events":[{"t":"2026-11-02T10:45-05:00","kind":"ENTRY","msg":"FAS: bought 48 @ 86.90, full stop 85.87 (risk $50); 3-stop 86.56, 86.21, 85.87"},{"t":"2026-10-30T16:30-04:00","kind":"DIGEST","msg":"2026-10-30 close: equity $100,106 (+0.11%), 0 open. Regime stretched (x0.5). Focus: LRCX, FAS, AAPB, LSCC, AAPU, PLTR, NOW."},{"t":"2026-10-30T16:30-04:00","kind":"SCAN","msg":"2026-10-30: 10 stalk, 7 focus (LRCX, FAS, AAPB, LSCC, AAPU, PLTR, NOW), equity $100,106"},{"t":"2026-10-30T16:30-04:00","kind":"WARN","msg":"market regime risk-on -> stretched (new-entry risk x0.5): 5 up-closes in a row"},{"t":"2026-10-30T16:30-04:00","kind":"CLOSE","msg":"CURE: closed, R=+1.07 (MFE +4.5R / MAE +0.0R), P&L $106"},{"t":"2026-10-30T16:30-04:00","kind":"MANAGE","msg":"CURE: Closed: Hit stop(s)"},{"t":"2026-10-30T16:30-04:00","kind":"MANAGE","msg":"CURE: Stop @ 286.76: sold 6 @ 286.76"},{"t":"2026-10-30T16:30-04:00","kind":"MANAGE","msg":"CURE: Stop @ 286.76: sold 5 @ 286.76"},{"t":"2026-10-30T16:30-04:00","kind":"MANAGE","msg":"CURE: Stop @ 286.76: sold 3 @ 286.76"},{"t":"2026-10-29T16:30-04:00","kind":"DIGEST","msg":"2026-10-29 close: equity $100,307 (+0.31%), 1 open. Regime risk-on (x1). Focus: CRM, AAPB, CELH, FAS, LSCC, PLTR, STRL, NVDA."},{"t":"2026-10-29T16:30-04:00","kind":"SCAN","msg":"2026-10-29: 7 stalk, 8 focus (CRM, AAPB, CELH, FAS, LSCC, PLTR, STRL, NVDA), equity $100,307"},{"t":"2026-10-28T16:30-04:00","kind":"DIGEST","msg":"2026-10-28 close: equity $100,257 (+0.26%), 1 open. Regime risk-on (x1). Focus: LRCX, CELH, FAS, PLTR."},{"t":"2026-10-28T16:30-04:00","kind":"SCAN","msg":"2026-10-28: 5 stalk, 4 focus (LRCX, CELH, FAS, PLTR), equity $100,257"},{"t":"2026-10-28T16:30-04:00","kind":"MANAGE","msg":"CURE: Stops -> breakeven (Day 3)"},{"t":"2026-10-28T16:30-04:00","kind":"MANAGE","msg":"CURE: Day3 reduction: sold 6 @ 297.20"},{"t":"2026-10-27T16:30-04:00","kind":"DIGEST","msg":"2026-10-27 close: equity $100,188 (+0.19%), 1 open. Regime risk-on (x1). Focus: LRCX, CRWD, CELH, AAPB, FAS, SMCI, PLTR."},{"t":"2026-10-27T16:30-04:00","kind":"SCAN","msg":"2026-10-27: 6 stalk, 7 focus (LRCX, CRWD, CELH, AAPB, FAS, SMCI, PLTR), equity $100,188"},{"t":"2026-10-27T16:30-04:00","kind":"MANAGE","msg":"CURE: 2R partial: sold 9 @ 293.68"},{"t":"2026-10-26T16:30-04:00","kind":"DIGEST","msg":"2026-10-26 close: equity $100,090 (+0.09%), 1 open. Regime risk-on (x1). Focus: CURE, FAS, AAPB, CELH, SMCI, STRL, PLTR."},{"t":"2026-10-26T16:30-04:00","kind":"SCAN","msg":"2026-10-26: 8 stalk, 7 focus (CURE, FAS, AAPB, CELH, SMCI, STRL, PLTR), equity $100,090"},{"t":"2026-10-23T16:30-04:00","kind":"DIGEST","msg":"2026-10-23 close: equity $100,023 (+0.02%), 1 open. Regime risk-on (x1). Focus: CURE, LSCC, NVDA, FAS, CRWD, NVDL, FNGU, STRL."},{"t":"2026-10-23T16:30-04:00","kind":"SCAN","msg":"2026-10-23: 9 stalk, 8 focus (CURE, LSCC, NVDA, FAS, CRWD, NVDL, FNGU, STRL), equity $100,023"},{"t":"2026-10-23T10:35-04:00","kind":"ENTRY","msg":"CURE: bought 29 @ 286.76, full stop 283.34 (risk $99); 3-stop 285.63, 284.47, 283.34"},{"t":"2026-10-22T16:30-04:00","kind":"DIGEST","msg":"2026-10-22 close: equity $100,000 (+0.00%), 0 open. Regime risk-on (x1). Focus: CURE, VRT, CELH, FNGU, AAPU, NVDA."},{"t":"2026-10-22T16:30-04:00","kind":"SCAN","msg":"2026-10-22: 9 stalk, 6 focus (CURE, VRT, CELH, FNGU, AAPU, NVDA), equity $100,000"}],"alerts":["Universe: hand-picked list in use (survivorship bias): hand-picked list (survivorship bias)","Regime gate: stretched, new-entry risk x0.5: 5 up-closes in a row"],"last_run":{"scan":"2026-10-30","intraday":"2026-11-02T10:45"},"updated":"2026-10-24T00:26:15Z","rules":{"risk_pct":0.2,"max_open":5,"max_new_day":3,"max_ext":4.0,"trim_levels":[7.0,8.5,10.0],"lod_atr":0.58,"dayvol_pct":20.0,"earn_days":7,"use_regime":true,"stops":[0.33,0.67,1.0],"last_entry":"15:00 ET"}}</script>
+<script>
+(function(){
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = s => document.querySelector(s);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const usd = n => n == null ? '\u2013' : (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US', {maximumFractionDigits: 0});
+const num = (n, d) => n == null ? '\u2013' : Number(n).toFixed(d == null ? 2 : d);
+const pct = (n, d) => n == null ? '\u2013' : (n >= 0 ? '+' : '') + Number(n).toFixed(d == null ? 1 : d) + '%';
+const cls = n => n > 0 ? 'up' : (n < 0 ? 'down' : '');
+const rr = n => n == null ? '\u2013' : (n >= 0 ? '+' : '') + Number(n).toFixed(2) + 'R';
+const S = D.summary;
+
+// ---- header / status
+const daysOld = D.scan.date ? Math.floor((Date.now() - new Date(D.scan.date + 'T12:00:00').getTime()) / 86400000) : null;
+$('#sub').textContent = D.updated ? 'Updated ' + D.updated.replace('T', ' ').replace('Z', ' UTC') : 'No run yet';
+$('#status').innerHTML =
+  '<span class="pill ' + (daysOld != null && daysOld <= 4 ? 'ok' : 'bad') + '">Last scan: ' + esc(D.scan.date || 'never') + '</span> ' +
+  '<span class="pill">Universe: ' + esc(D.scan.n_universe || 0) + '</span> ' +
+  '<span class="pill">Intraday: ' + esc((D.last_run.intraday || 'never').replace('T', ' ').slice(0, 16)) + '</span>';
+
+// ---- banners
+let b = '';
+if (D.demo) b += '<div class="banner demo">DEMO DATA: synthetic prices and trades, only here to show the layout. Not a real scan.</div>';
+if (daysOld != null && daysOld > 4) b += '<div class="banner">The last scan is ' + daysOld + ' days old. Check that the scheduled job is still running.</div>';
+if (!D.scan.date) b += '<div class="banner">No scan has run yet. Run <code>python run_daily.py scan --force</code> once, or wait for the scheduled job.</div>';
+(D.alerts || []).forEach(a => { b += '<div class="banner">' + esc(a) + '</div>'; });
+$('#banners').innerHTML = b;
+
+// ---- KPIs
+const k = (l, v, c) => '<div class="kpi"><div class="l">' + l + '</div><div class="v ' + (c || '') + '">' + v + '</div></div>';
+$('#kpis').innerHTML =
+  k('Equity', usd(S.equity)) + k('Return', pct(S.return_pct, 2), cls(S.return_pct)) +
+  k('Open risk', num(S.open_risk_pct, 2) + '%') + k('Open / max', S.open_positions + ' / ' + D.rules.max_open) +
+  k('Win rate', S.win_rate == null ? '\u2013' : Math.round(S.win_rate * 100) + '% <span class="sub">of ' + S.closed_trades + '</span>') +
+  k('Avg R', rr(S.avg_r), cls(S.avg_r)) + k('Profit factor', S.profit_factor == null ? '\u2013' : (S.profit_factor >= 999 ? '\u221e' : num(S.profit_factor, 2))) +
+  k('Max drawdown', num(S.max_drawdown_pct, 1) + '%', cls(S.max_drawdown_pct)) + k('Closed trades', S.closed_trades);
+
+// ---- equity curve (inline SVG)
+(function(){
+  const c = D.curve || [];
+  if (c.length < 2) { $('#curve').innerHTML = '<div class="empty">The curve starts after the second end-of-day close.</div>'; return; }
+  const W = 640, H = 240, P = {l: 76, r: 10, t: 10, b: 28};
+  const ys = c.map(p => p.equity), base = D.initial_equity;
+  let lo = Math.min.apply(null, ys.concat([base])), hi = Math.max.apply(null, ys.concat([base]));
+  if (hi === lo) { hi += 1; lo -= 1; }
+  const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+  const X = i => P.l + (W - P.l - P.r) * i / (c.length - 1);
+  const Y = v => P.t + (H - P.t - P.b) * (1 - (v - lo) / (hi - lo));
+  const line = c.map((p, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(p.equity).toFixed(1)).join(' ');
+  const area = line + ' L' + X(c.length - 1).toFixed(1) + ' ' + (H - P.b) + ' L' + P.l + ' ' + (H - P.b) + ' Z';
+  const ticks = [lo + pad, (lo + hi) / 2, hi - pad].map(v => '<text x="' + (P.l - 6) + '" y="' + (Y(v) + 4).toFixed(1) +
+    '" text-anchor="end" font-size="15" fill="var(--muted)">' + usd(v) + '</text>').join('');
+  $('#curve').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Equity curve">' +
+    '<line x1="' + P.l + '" x2="' + (W - P.r) + '" y1="' + Y(base).toFixed(1) + '" y2="' + Y(base).toFixed(1) + '" stroke="var(--line)" stroke-dasharray="4 4"/>' +
+    '<path d="' + area + '" fill="var(--accent)" opacity=".12"/><path d="' + line + '" fill="none" stroke="var(--accent)" stroke-width="2"/>' +
+    ticks + '<text x="' + P.l + '" y="' + (H - 6) + '" font-size="15" fill="var(--muted)">' + esc(c[0].date) + '</text>' +
+    '<text x="' + (W - P.r) + '" y="' + (H - 6) + '" text-anchor="end" font-size="15" fill="var(--muted)">' + esc(c[c.length - 1].date) + '</text></svg>';
+})();
+
+// ---- table helper
+function table(cols, rows, empty, stack) {
+  if (!rows.length) return '<div class="empty">' + esc(empty) + '</div>';
+  return '<table class="' + (stack ? 'stack' : '') + '"><thead><tr>' + cols.map(c => '<th class="' + (c.l ? 'l' : '') + '">' + c.h + '</th>').join('') + '</tr></thead><tbody>' +
+    rows.map(r => '<tr>' + cols.map(c => '<td data-label="' + esc(c.h.replace(/&amp;/g, '&').replace(/&times;/g, '\u00d7')) + '" class="' + (c.l ? 'l ' : '') + (c.c ? c.c(r) : '') + '">' + c.f(r) + '</td>').join('') + '</tr>').join('') + '</tbody></table>';
+}
+
+// ---- open positions
+$('#positions').innerHTML = table([
+  {h: 'Symbol', f: r => '<span class="sym">' + esc(r.symbol) + '</span>', l: 1},
+  {h: 'Industry', f: r => esc(r.industry) + (r.lev > 1 ? ' <span class="chip">' + r.lev + 'x</span>' : ''), l: 1},
+  {h: 'Day', f: r => r.day}, {h: 'Last', f: r => num(r.last)},
+  {h: 'R', f: r => rr(r.r_now), c: r => cls(r.r_now)},
+  {h: 'P&amp;L', f: r => usd(r.pnl), c: r => cls(r.pnl)},
+  {h: 'Shares', f: r => r.remaining + ' / ' + r.size},
+  {h: 'Stops', f: r => r.stops.map(s => '<span class="chip">' + num(s[0]) + ' &times; ' + s[1] + '</span>').join(''), l: 1},
+  {h: 'Last note', f: r => esc(r.last_note), l: 1}
+], D.positions, 'No open positions.', true);
+
+// ---- focus list with the latest ORH verdicts
+const chk = {}; ((D.intraday || {}).checked || []).forEach(x => { chk[x.symbol] = x; });
+$('#focusSub').textContent = D.intraday && D.intraday.asof ? '\u00b7 ORH check ' + D.intraday.asof.replace('T', ' ').slice(0, 16) + ' ET' : '';
+const listCols = [
+  {h: 'Symbol', f: r => '<span class="sym">' + esc(r.symbol) + '</span>' + (r.LEV ? ' <span class="chip">LEV</span>' : ''), l: 1},
+  {h: 'Score', f: r => num(r.score, 2)}, {h: 'Close', f: r => num(r.close)}, {h: 'VCP', f: r => num(r.VCP, 2)},
+  {h: 'Ext&times;', f: r => num(r.ATR_ext, 1)}, {h: 'ADR%', f: r => num(r['ADR%'], 1)},
+  {h: 'RVOL', f: r => num(r.RVOL, 2)}, {h: 'VARS', f: r => num(r.VARS, 0)}
+];
+$('#focus').innerHTML = table(listCols.concat([
+  {h: 'Next earnings', f: r => r.LEV ? '\u2013' : (r.earn ? esc(r.earn) : '<span class="muted">none known</span>')},
+  {h: 'ORH verdict', f: r => { const x = chk[r.symbol]; return x ? (x.passed ? '<span class="up">ready</span> ' : '') + esc(x.reason) : '\u2013'; }, l: 1},
+  {h: 'Data', f: r => r.flag ? '<span class="down">' + esc(r.flag) + '</span>' : '', l: 1}
+]), D.scan.focus, 'Empty: nothing meets every Focus rule today.');
+$('#stalk').innerHTML = table(listCols, D.scan.stalk, 'Empty.');
+$('#mr').innerHTML = table(listCols.slice(0, 5).concat([{h: 'MR', f: r => num(r.MR, 2)}]), D.scan.mr, 'Empty.');
+
+// ---- closed trades
+$('#closed').innerHTML = table([
+  {h: 'Symbol', f: r => '<span class="sym">' + esc(r.symbol) + '</span>', l: 1},
+  {h: 'In', f: r => esc(r.entry_date)}, {h: 'Out', f: r => esc(r.exit_date)},
+  {h: 'Entry', f: r => num(r.entry)}, {h: 'Exit', f: r => num(r.exit)},
+  {h: 'R', f: r => rr(r.r), c: r => cls(r.r)}, {h: 'Best', f: r => rr(r.mfe)}, {h: 'Worst', f: r => rr(r.mae)}, {h: 'P&amp;L', f: r => usd(r.pnl), c: r => cls(r.pnl)},
+  {h: 'Reason', f: r => esc(r.note), l: 1}
+], D.closed, 'No closed trades yet.', true);
+
+// ---- risk controls
+(function(){
+  const R = D.risk || {};
+  const meter = (label, val, cap, text, warn) => '<div class="meter"><div class="l"><span>' + label + '</span><span class="v">' + text + '</span></div>' +
+    '<div class="bar ' + (warn ? 'warn' : '') + '"><i style="width:' + Math.max(0, Math.min(100, cap ? val / cap * 100 : 0)).toFixed(0) + '%"></i></div></div>';
+  let h = '<div class="meters">' +
+    meter('Drawdown from peak', R.dd_pct, 10, num(R.dd_pct, 1) + '% · risk x' + num(R.mult, 2), R.dd_pct >= 3) +
+    meter('Today vs daily loss limit', Math.max(0, R.day_loss_pct), 0.5, num(R.day_loss_pct, 2) + '% / 0.5%', R.day_loss_pct >= 0.5) +
+    meter('Open risk', R.open_risk_pct, R.open_risk_cap_pct, num(R.open_risk_pct, 2) + '% / ' + num(R.open_risk_cap_pct, 1) + '%', R.open_risk_pct >= R.open_risk_cap_pct) +
+    meter('Leveraged exposure', R.lev_exposure_pct, R.lev_cap_pct, num(R.lev_exposure_pct, 0) + '% / ' + num(R.lev_cap_pct, 0) + '%', R.lev_exposure_pct >= R.lev_cap_pct) + '</div>';
+  const inds = Object.keys(R.industries || {}).map(k => '<span class="chip">' + esc(k) + ' ' + R.industries[k] + '/' + R.max_industry + '</span>').join('');
+  h += '<p class="note">Positions per industry (cap ' + R.max_industry + '): ' + (inds || 'none') + '</p>';
+  const cp = (R.corr_pairs || []).map(p => '<span class="chip">' + esc(p.a) + ' / ' + esc(p.b) + ' ' + num(p.corr, 2) + '</span>').join('');
+  h += '<p class="note">Open positions that trade alike (60-day return correlation of 0.70 or more): ' + (cp || 'none') + '</p>';
+  if (R.reasons && R.reasons.length) h += '<div class="banner" style="margin-top:10px">' + R.reasons.map(esc).join(' &middot; ') + '</div>';
+  $('#risk').innerHTML = h;
+})();
+
+// ---- evidence
+(function(){
+  const E = S.evidence || {n: 0, target: 100};
+  let h = '<div class="meter"><div class="l"><span>Closed trades</span><span class="v">' + E.n + ' / ' + E.target + '</span></div>' +
+    '<div class="bar"><i style="width:' + (E.progress_pct || 0) + '%"></i></div></div>';
+  if (E.ci_low == null) {
+    h += '<p class="note">Fewer than 8 closed trades: not enough for a confidence range. Do not tune any rule yet.</p>';
+  } else {
+    h += '<p class="note">Mean <b>' + rr(E.mean_r) + '</b> per trade, 95% bootstrap range <b>' + rr(E.ci_low) + '</b> to <b>' + rr(E.ci_high) +
+      '</b>. Chance the true expectancy is above zero: <b>' + Math.round(E.p_positive * 100) + '%</b>.' +
+      (E.n < E.target ? ' Still below ' + E.target + ' trades, so treat this as a rough guide.' : '') + '</p>';
+  }
+  h += '<p class="note">Average best point reached <b>' + rr(S.avg_mfe_r) + '</b>, worst point <b>' + rr(S.avg_mae_r) + '</b>; ' +
+    'share of the best point actually captured <b>' + (S.capture_ratio == null ? '\u2013' : Math.round(S.capture_ratio * 100) + '%') + '</b>.</p>';
+  $('#evidence').innerHTML = h;
+})();
+
+// ---- filter audit
+$('#audit').innerHTML = table([
+  {h: 'Kind', f: r => esc(r.kind), l: 1}, {h: 'Reason', f: r => esc(r.reason), l: 1}, {h: 'N', f: r => r.n}, {h: 'With 5d result', f: r => r.resolved},
+  {h: 'Avg 5d %', f: r => r.avg_fwd_pct == null ? '\u2013' : pct(r.avg_fwd_pct, 2), c: r => cls(r.avg_fwd_pct)},
+  {h: 'Median %', f: r => r.median_fwd_pct == null ? '\u2013' : pct(r.median_fwd_pct, 2)},
+  {h: 'Up %', f: r => r.win_pct == null ? '\u2013' : r.win_pct + '%'},
+  {h: 'Best (ATR)', f: r => num(r.avg_mfe_atr, 1)}, {h: 'Worst (ATR)', f: r => num(r.avg_mae_atr, 1)},
+  {h: 'Verdict', f: r => esc(r.verdict), l: 1}
+], D.audit || [], 'No signals logged yet.') +
+  '<p class="note">Close-to-close moves after the signal, with no stops or trims. A filter that rejects names which then rise is costing winners; one that rejects names which then fall is protecting you. No verdict until 30 resolved signals per reason.</p>';
+
+// ---- exit lab
+(function(){
+  const L = D.exit_lab || {};
+  if (!L.rows || !L.rows.length) { $('#lab').innerHTML = '<div class="empty">Not run yet. <code>python exit_lab.py</code> replays the same signals under each exit rule.</div>'; return; }
+  $('#lab').innerHTML = '<p class="note">As of ' + esc(L.asof) + ' · ' + esc(L.note || '') + '</p>' + table([
+    {h: 'Variant', f: r => esc(r.variant), l: 1}, {h: 'Trades', f: r => r.trades}, {h: 'Win %', f: r => Math.round(r.win_rate * 100) + '%'},
+    {h: 'Avg R', f: r => rr(r.avg_r), c: r => cls(r.avg_r)}, {h: 'Profit factor', f: r => r.profit_factor >= 999 ? '\u221e' : num(r.profit_factor, 2)},
+    {h: 'Return', f: r => pct(r.return_pct, 1), c: r => cls(r.return_pct)}, {h: 'Max DD', f: r => num(r.max_drawdown_pct, 1) + '%'},
+    {h: 'Capture', f: r => r.capture_ratio == null ? '\u2013' : Math.round(r.capture_ratio * 100) + '%'}
+  ], L.rows, '');
+})();
+
+// ---- data health + universe
+(function(){
+  const U = D.universe || {}, H = D.datacheck || {}, C = H.crosscheck;
+  let h = '<p><b>Universe:</b> ' + esc(U.source || 'unknown') + (U.date ? ' snapshot ' + esc(U.date) : '') + ' · ' + esc(U.n || 0) + ' names · ' + esc(U.note || '') + '</p>';
+  const sk = Object.keys(H.sanity || {});
+  h += '<p><b>Sanity checks:</b> ' + (sk.length ? sk.map(k => esc(k) + ': ' + H.sanity[k].count + ' (' + H.sanity[k].examples.slice(0, 3).map(esc).join(', ') + ')').join(' · ') : 'all clear') + '</p>';
+  h += '<p><b>Second-source cross-check (Stooq):</b> ' + (C ? C.checked + ' compared, ' + C.ok + ' within tolerance, ' + (C.mismatched || []).length + ' mismatched, ' + (C.unavailable || []).length + ' unavailable' +
+    ' · last run ' + esc(H.last_crosscheck || '') : 'not run yet') + '</p>';
+  (C && C.mismatched || []).forEach(m => { h += '<p class="down">' + esc(m.symbol) + ': Yahoo ' + m.yahoo + ' vs Stooq ' + m.stooq + ' (' + m.diff_pct + '% on ' + esc(m.date) + ')</p>'; });
+  $('#health').innerHTML = h;
+})();
+
+// ---- market regime
+(function(){
+  const G = D.regime || {};
+  if (!G.label) { $('#regime').innerHTML = '<div class="empty">No reading yet: the first scan sets it.</div>'; return; }
+  const tone = G.label === 'risk-off' ? 'down' : (G.label === 'risk-on' ? 'up' : '');
+  let h = '<p style="margin:0 0 6px"><span class="pill ' + (G.label === 'risk-off' ? 'bad' : (G.label === 'risk-on' ? 'ok' : '')) + '">' + esc(G.label) + '</span> ' +
+    '<b class="' + tone + '">new-entry risk x' + num(G.mult, 2) + '</b>' + (D.rules.use_regime ? '' : ' <span class="muted">(gate is switched off in config)</span>') + '</p>';
+  h += '<p class="note" style="margin-top:0">' + (G.reasons || []).map(esc).join('; ') + '</p>';
+  if (G.pct20 != null) h += '<p class="note">Breadth: <b>' + num(G.pct20, 0) + '%</b> of ' + G.n + ' names above their 20-MA, <b>' + num(G.pct50, 0) +
+    '%</b> above the 50-MA, net 20-day highs minus lows <b>' + pct(G.net_hl, 0) + '</b>.</p>';
+  const mk = (D.scan.market || []).map(m => '<span class="chip">' + esc(m.symbol) + ' ' + num(m.close) + ' \u00b7 ' + (m.above_20 ? 'above' : 'below') + ' 20d, ' + (m.above_50 ? 'above' : 'below') + ' 50d' +
+    (m.ext == null ? '' : ' \u00b7 ' + num(m.ext, 1) + 'x ATR%') + '</span>').join('');
+  if (G.spy && G.spy.streak != null) h += '<p class="note">SPY up-close streak: <b>' + G.spy.streak + '</b>.</p>';
+  h += '<p class="note">' + (mk || '') + '</p>';
+  h += '<p class="note">Read at the last close and applied to the next day\u2019s entries. Open positions keep their stops and trails whatever the regime says.</p>';
+  $('#regime').innerHTML = h;
+})();
+
+// ---- Alpaca paper mirror
+(function(){
+  const B = D.broker || {};
+  if (!B.mode) { $('#broker').innerHTML = '<div class="empty">Not enabled. Set <code>PAPER_BROKER=alpaca</code> plus your PAPER keys (see README_AUTOMATION.md). It starts in dry-run: orders are logged here, not sent.</div>'; return; }
+  const a = B.account || {};
+  let h = '<p><span class="pill ' + (B.mode === 'send' ? 'ok' : '') + '">' + (B.mode === 'send' ? 'SENDING paper orders' : 'DRY RUN: logged, not sent') + '</span> ' +
+    (a.status ? '<span class="pill">account ' + esc(a.status) + (a.blocked ? ' \u00b7 TRADING BLOCKED' : '') + '</span> ' : '') +
+    (a.equity != null ? '<span class="pill">Alpaca equity ' + usd(a.equity) + (B.equity_gap_pct != null ? ' (' + pct(B.equity_gap_pct, 1) + ' vs simulator)' : '') + '</span>' : '') + '</p>';
+  if (B.equity_gap_pct != null && Math.abs(B.equity_gap_pct) > 5) h += '<div class="banner">The Alpaca account equity differs from the simulator by more than 5%: position sizes are set by the simulator, so the two accounts will drift.</div>';
+  const rec = B.recon || {};
+  if (rec.note) h += '<p class="note">' + esc(rec.note) + '</p>';
+  if ((rec.rows || []).length) h += '<h2 style="margin-top:10px">Positions: simulator vs broker</h2>' + table([
+    {h: 'Symbol', f: r => '<span class="sym">' + esc(r.symbol) + '</span>', l: 1}, {h: 'Simulator', f: r => r.sim_qty}, {h: 'Broker', f: r => r.broker_qty},
+    {h: 'Status', f: r => esc(r.status), l: 1, c: r => r.status === 'ok' ? 'up' : (r.status.startsWith('pending') ? '' : 'down')}], rec.rows, '');
+  if ((B.fills || []).length) h += '<h2 style="margin-top:10px">Entry fills: real paper fill vs the fill model</h2>' + table([
+    {h: 'Symbol', f: r => '<span class="sym">' + esc(r.symbol) + '</span>', l: 1}, {h: 'Qty', f: r => r.qty}, {h: 'Simulator', f: r => num(r.sim_price)},
+    {h: 'Alpaca', f: r => num(r.broker_price)}, {h: 'Difference', f: r => pct(r.diff_pct, 2), c: r => r.diff_pct > 0 ? 'down' : 'up'},
+    {h: 'Modelled slippage', f: r => num(r.modeled_slip_pct, 2) + '%'}], B.fills.slice().reverse().slice(0, 15), '') +
+    '<p class="note">If Alpaca consistently fills worse than the modelled slippage, the model is too kind: raise <code>SLIP_ATR_FRAC</code> / <code>SLIP_IMPACT</code>.</p>';
+  if ((B.log || []).length) h += '<h2 style="margin-top:10px">Order log</h2><div class="log">' + B.log.slice().reverse().slice(0, 20).map(e =>
+    '<div><span class="t">' + esc((e.t || '').replace('T', ' ').slice(0, 16)) + '</span><b>' + esc(e.action) + '</b> ' + esc(e.detail) + (e.sent ? '' : ' <span class="muted">(dry run)</span>') + '</div>').join('') + '</div>';
+  if ((B.errors || []).length) h += '<h2 style="margin-top:10px">Errors</h2>' + B.errors.slice().reverse().map(e => '<p class="down">' + esc(e.t.replace('T', ' ').slice(0, 16)) + ' ' + esc(e.msg) + '</p>').join('');
+  $('#broker').innerHTML = h;
+})();
+
+// ---- activity + rules
+$('#events').innerHTML = (D.events || []).length ? D.events.map(e =>
+  '<div><span class="t">' + esc((e.t || '').replace('T', ' ').slice(0, 16)) + '</span><b>' + esc(e.kind) + '</b> ' + esc(e.msg) + '</div>').join('') : '<div class="empty">Nothing yet.</div>';
+const R = D.rules;
+$('#rules').innerHTML = '<ul class="rules">' +
+  '<li>Risk per trade ' + num(R.risk_pct, 2) + '% of equity, sized to the full stop; max ' + R.max_open + ' open, max ' + R.max_new_day + ' new per day.</li>' +
+  '<li>Entry only on a clean ORH re-claim with at least ' + num(R.dayvol_pct, 0) + '% of an average day\u2019s volume traded, low-of-day within ' + num(R.lod_atr, 2) + ' ATR, and no later than ' + esc(R.last_entry) + '.</li>' +
+  '<li>No entry beyond ' + num(R.max_ext, 0) + '&times; ATR% from the 50-MA; trims at ' + R.trim_levels.join(' / ') + '&times;.</li>' +
+  '<li>3-stop: thirds stop at ' + R.stops.map(x => Math.round(x * 100) + '%').join(' / ') + ' of the way to the full stop (full failure \u2248 \u22120.67R).</li>' +
+  '<li>Portfolio caps: max ' + R.max_industry + ' per industry, ' + R.max_sector + ' per sector, open risk under ' + num(R.open_risk_cap_pct, 1) + '% of equity, leveraged exposure under ' + num(R.lev_cap_pct, 0) + '%, and no name that is 85%+ correlated with an open position.</li>' +
+  '<li>Portfolio caps: max ' + R.max_industry + ' per industry, ' + R.max_sector + ' per sector, open risk under ' + num(R.open_risk_cap_pct, 1) + '% of equity, leveraged exposure under ' + num(R.lev_cap_pct, 0) + '%, and no name that is 85%+ correlated with an open position.</li>' +
+  '<li>Scanner: no Focus name with earnings inside ' + R.earn_days + ' days. Market regime gate ' + (R.use_regime ? 'on' : 'off') + ': risk-off blocks new entries, neutral and stretched halve their risk.</li>' +
+  '<li>Day 3: reduce a third and move stops to breakeven; from day 4 trail under the 10-day MA.</li></ul>';
+})();
+</script>
+</body>
+</html>

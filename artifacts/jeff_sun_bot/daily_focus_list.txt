@@ -1,0 +1,18 @@
+Jeff Sun Enhanced Focus List – 2026-10-18 03:40
+Max open: 5 | Max new/day: 3 | Max ATR-ext: 7.0x
+============================================================
+
+ACTIONABLE:
+  None today
+
+FULL LIST:
+  VEEV    0.583  ext=3.9x
+  MRNA    0.582  ext=3.4x
+  ANF     0.539  ext=3.9x
+  URBN    0.444  ext=3.1x
+  GTLB    0.428  ext=2.0x
+  AI      0.404  ext=1.0x
+  AEO     0.401  ext=2.0x
+  AAPB    0.382  ext=2.6x
+  OSCR    0.274  ext=0.3x
+  AFRM    0.181  ext=0.1x

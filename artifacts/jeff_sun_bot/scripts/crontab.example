@@ -1,0 +1,12 @@
+# Local alternative to GitHub Actions. Install with:  crontab -e   (paste, then fix the two paths)
+# CRON_TZ is supported by cronie (most Linux). On macOS / other crons, set the machine to America/New_York
+# or convert the hours to your local time.
+CRON_TZ=America/New_York
+BOT=/path/to/jeff_sun_bot
+PAPER_STATE_DIR=/path/to/jeff_sun_bot/state
+PAPER_DOCS_DIR=/path/to/jeff_sun_bot/docs
+
+# intraday: every 30 minutes, 10:05-15:35 ET, Mon-Fri
+5,35 10-15 * * 1-5   cd $BOT && python3 run_daily.py intraday >> $BOT/state/intraday.log 2>&1
+# post-close scan at 16:45 ET
+45 16 * * 1-5        cd $BOT && python3 run_daily.py scan     >> $BOT/state/scan.log 2>&1
