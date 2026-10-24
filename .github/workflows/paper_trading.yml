@@ -1,0 +1,111 @@
+name: paper-trading
+
+# Runs the paper-trading automation on GitHub's servers and commits the results back, so the
+# state (state/paper_state.json) and the dashboard (docs/index.html) are always current.
+#
+# Times are UTC; GitHub cron has no time zone, so both DST regimes are scheduled and the script
+# itself refuses to act outside its New York time window (and is idempotent), so extra runs are harmless.
+on:
+  schedule:
+    - cron: "45 20 * * 1-5"      # post-close scan: 16:45 ET during EDT
+    - cron: "45 21 * * 1-5"      # post-close scan: 16:45 ET during EST
+    - cron: "5,35 14-20 * * 1-5" # intraday ORH entries + stop checks, every 30 min (script window 10:00-15:50 ET)
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Which job to run"
+        type: choice
+        options: [scan, intraday, dashboard, status, broker-check]
+        default: scan
+      force:
+        description: "Ignore the time-window / already-processed guards"
+        type: boolean
+        default: false
+      refresh_universe:
+        description: "Rebuild the rules-based universe now (scan job; slow, 10-20 min)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: paper-trading          # one run at a time, so two jobs never write the state file together
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45          # the first scan builds the universe from ~7,000 listed symbols
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: artifacts/jeff_sun_bot/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r artifacts/jeff_sun_bot/requirements.txt
+
+      - name: Pick the job
+        id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_JOB: ${{ inputs.job }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then JOB="$INPUT_JOB"
+          elif [ "$SCHEDULE" = "45 20 * * 1-5" ] || [ "$SCHEDULE" = "45 21 * * 1-5" ]; then JOB="scan"
+          else JOB="intraday"; fi
+          echo "job=$JOB" >> "$GITHUB_OUTPUT"
+
+      - name: Run ${{ steps.pick.outputs.job }}
+        working-directory: artifacts/jeff_sun_bot
+        env:
+          PAPER_STATE_DIR: ${{ github.workspace }}/state
+          PAPER_DOCS_DIR: ${{ github.workspace }}/docs
+          JOB: ${{ steps.pick.outputs.job }}
+          FORCE: ${{ inputs.force && '--force' || '' }}
+          REFRESH: ${{ inputs.refresh_universe && '--refresh-universe' || '' }}
+          # Optional Alpaca PAPER mirror. Keys are SECRETS; the two switches are repository VARIABLES
+          # (Settings, Secrets and variables, Actions, Variables). Unset = mirror off. Dry run until ALPACA_SEND_ORDERS=1.
+          PAPER_BROKER: ${{ vars.PAPER_BROKER }}
+          ALPACA_SEND_ORDERS: ${{ vars.ALPACA_SEND_ORDERS }}
+          ALPACA_API_KEY_ID: ${{ secrets.ALPACA_API_KEY_ID }}
+          ALPACA_API_SECRET_KEY: ${{ secrets.ALPACA_API_SECRET_KEY }}
+          # Optional alerts: add these as repository secrets (Settings, Secrets and variables, Actions). Unset = silent.
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+        run: |
+          if [ "$JOB" = "broker-check" ]; then python broker.py --check; else python run_daily.py "$JOB" $FORCE $REFRESH; fi
+
+      - name: Alert on failure
+        if: failure()
+        working-directory: artifacts/jeff_sun_bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+          MSG: "paper-trading job FAILED (${{ steps.pick.outputs.job }}): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: python notify.py "$MSG"
+
+      - name: Commit state and dashboard
+        run: |
+          git config user.name  "paper-trading-bot"
+          git config user.email "paper-trading-bot@users.noreply.github.com"
+          git add state docs
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "paper: ${{ steps.pick.outputs.job }} $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase --autostash
+          git push
