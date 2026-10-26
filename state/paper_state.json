@@ -11,6 +11,11 @@
    "date": "2026-10-23",
    "equity": 100000.0,
    "cash": 100000.0
+  },
+  {
+   "date": "2026-10-26",
+   "equity": 100000.0,
+   "cash": 100000.0
   }
  ],
  "scan": {
@@ -415,16 +420,23 @@
   "mr": []
  },
  "intraday": {
-  "asof": null,
-  "checked": []
+  "asof": "2026-10-26T15:47",
+  "checked": [
+   {
+    "symbol": "RVTY",
+    "passed": false,
+    "reason": "Price still below ORH"
+   }
+  ]
  },
  "day": {
-  "date": "2026-10-24",
-  "new_trades": 0
+  "date": "2026-10-26",
+  "new_trades": 0,
+  "regime_noted": "2026-10-26"
  },
  "last_run": {
   "scan": "2026-10-23",
-  "intraday": null
+  "intraday": "2026-10-26T15:47"
  },
  "events": [
   {
@@ -436,10 +448,21 @@
    "t": "2026-10-24T09:02-04:00",
    "kind": "DIGEST",
    "msg": "2026-10-23 close: equity $100,000 (+0.00%), 0 open. Regime risk-off (x0). Focus: RVTY."
+  },
+  {
+   "t": "2026-10-26T15:47-04:00",
+   "kind": "WARN",
+   "msg": "new entries paused by the regime gate (risk-off): breadth 26% of names above their 20-MA (< 30%)"
+  },
+  {
+   "t": "2026-10-26T15:47-04:00",
+   "kind": "WARN",
+   "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
   }
  ],
  "alerts": [
-  "Data check, extreme one-day move (split / bad tick?): 2 symbol(s), e.g. TEAM (2026-08-07 35%), KOD (2026-09-28 178%)"
+  "Data check, extreme one-day move (split / bad tick?): 2 symbol(s), e.g. TEAM (2026-08-07 35%), KOD (2026-09-28 178%)",
+  "Regime gate: risk-off, new-entry risk x0: breadth 26% of names above their 20-MA (< 30%)"
  ],
  "signals": [
   {
@@ -897,6 +920,25 @@
    "mfe_atr": null,
    "mae_atr": null,
    "done": false
+  },
+  {
+   "id": "2026-10-26:RVTY:orh_skip",
+   "date": "2026-10-26",
+   "symbol": "RVTY",
+   "kind": "orh_skip",
+   "reason": "price below ORH",
+   "detail": "Price still below ORH",
+   "price": 160.19,
+   "atr": 5.8662,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
   }
  ],
  "datacheck": {
@@ -963,7 +1005,12 @@
   "orders": {},
   "fills": [],
   "log": [],
-  "errors": [],
+  "errors": [
+   {
+    "t": "2026-10-26T19:47:13",
+    "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+   }
+  ],
   "mode": "dry-run",
   "account": {
    "equity": 100000.0,
@@ -980,7 +1027,7 @@
    "mode": "dry-run",
    "note": "dry run: orders are logged, not sent, so positions are not compared"
   },
-  "asof": "2026-10-24T13:10:52",
+  "asof": "2026-10-26T19:47:13",
   "seq": 0
  },
  "returns": {
@@ -1138,5 +1185,5 @@
   "avg_mae_r": null,
   "capture_ratio": null
  },
- "updated": "2026-10-24T13:10:54Z"
+ "updated": "2026-10-26T19:47:13Z"
 }
