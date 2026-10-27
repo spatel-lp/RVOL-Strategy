@@ -16,6 +16,11 @@
    "date": "2026-10-26",
    "equity": 100000.0,
    "cash": 100000.0
+  },
+  {
+   "date": "2026-10-27",
+   "equity": 100000.0,
+   "cash": 100000.0
   }
  ],
  "scan": {
@@ -420,23 +425,23 @@
   "mr": []
  },
  "intraday": {
-  "asof": "2026-10-26T15:47",
+  "asof": "2026-10-27T15:16",
   "checked": [
    {
     "symbol": "RVTY",
     "passed": false,
-    "reason": "Price still below ORH"
+    "reason": "Volume light for this time of day: 0.5x typical (< 1.5x)"
    }
   ]
  },
  "day": {
-  "date": "2026-10-26",
+  "date": "2026-10-27",
   "new_trades": 0,
-  "regime_noted": "2026-10-26"
+  "regime_noted": "2026-10-27"
  },
  "last_run": {
   "scan": "2026-10-23",
-  "intraday": "2026-10-26T15:47"
+  "intraday": "2026-10-27T15:16"
  },
  "events": [
   {
@@ -456,6 +461,16 @@
   },
   {
    "t": "2026-10-26T15:47-04:00",
+   "kind": "WARN",
+   "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+  },
+  {
+   "t": "2026-10-27T15:16-04:00",
+   "kind": "WARN",
+   "msg": "new entries paused by the regime gate (risk-off): breadth 26% of names above their 20-MA (< 30%)"
+  },
+  {
+   "t": "2026-10-27T15:16-04:00",
    "kind": "WARN",
    "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
   }
@@ -939,6 +954,25 @@
    "mfe_atr": null,
    "mae_atr": null,
    "done": false
+  },
+  {
+   "id": "2026-10-27:RVTY:orh_skip",
+   "date": "2026-10-27",
+   "symbol": "RVTY",
+   "kind": "orh_skip",
+   "reason": "volume too light",
+   "detail": "Volume light for this time of day: 0.5x typical (< 1.5x)",
+   "price": 161.51,
+   "atr": 5.8662,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
   }
  ],
  "datacheck": {
@@ -1009,6 +1043,10 @@
    {
     "t": "2026-10-26T19:47:13",
     "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+   },
+   {
+    "t": "2026-10-27T19:16:22",
+    "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
    }
   ],
   "mode": "dry-run",
@@ -1027,7 +1065,7 @@
    "mode": "dry-run",
    "note": "dry run: orders are logged, not sent, so positions are not compared"
   },
-  "asof": "2026-10-26T19:47:13",
+  "asof": "2026-10-27T19:16:22",
   "seq": 0
  },
  "returns": {
@@ -1185,5 +1223,5 @@
   "avg_mae_r": null,
   "capture_ratio": null
  },
- "updated": "2026-10-26T19:47:13Z"
+ "updated": "2026-10-27T19:16:22Z"
 }
