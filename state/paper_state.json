@@ -21,6 +21,11 @@
    "date": "2026-10-27",
    "equity": 100000.0,
    "cash": 100000.0
+  },
+  {
+   "date": "2026-10-28",
+   "equity": 100000.0,
+   "cash": 100000.0
   }
  ],
  "scan": {
@@ -425,23 +430,16 @@
   "mr": []
  },
  "intraday": {
-  "asof": "2026-10-27T15:16",
-  "checked": [
-   {
-    "symbol": "RVTY",
-    "passed": false,
-    "reason": "Volume light for this time of day: 0.5x typical (< 1.5x)"
-   }
-  ]
+  "asof": "2026-10-28T15:22",
+  "checked": []
  },
  "day": {
-  "date": "2026-10-27",
-  "new_trades": 0,
-  "regime_noted": "2026-10-27"
+  "date": "2026-10-28",
+  "new_trades": 0
  },
  "last_run": {
   "scan": "2026-10-23",
-  "intraday": "2026-10-27T15:16"
+  "intraday": "2026-10-28T15:22"
  },
  "events": [
   {
@@ -473,11 +471,16 @@
    "t": "2026-10-27T15:16-04:00",
    "kind": "WARN",
    "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+  },
+  {
+   "t": "2026-10-28T15:22-04:00",
+   "kind": "WARN",
+   "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
   }
  ],
  "alerts": [
   "Data check, extreme one-day move (split / bad tick?): 2 symbol(s), e.g. TEAM (2026-08-07 35%), KOD (2026-09-28 178%)",
-  "Regime gate: risk-off, new-entry risk x0: breadth 26% of names above their 20-MA (< 30%)"
+  "Focus list is stale (scan date 2026-10-23); no new entries until the next scan."
  ],
  "signals": [
   {
@@ -1047,6 +1050,10 @@
    {
     "t": "2026-10-27T19:16:22",
     "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+   },
+   {
+    "t": "2026-10-28T19:22:58",
+    "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
    }
   ],
   "mode": "dry-run",
@@ -1065,7 +1072,7 @@
    "mode": "dry-run",
    "note": "dry run: orders are logged, not sent, so positions are not compared"
   },
-  "asof": "2026-10-27T19:16:22",
+  "asof": "2026-10-28T19:22:58",
   "seq": 0
  },
  "returns": {
@@ -1223,5 +1230,5 @@
   "avg_mae_r": null,
   "capture_ratio": null
  },
- "updated": "2026-10-27T19:16:22Z"
+ "updated": "2026-10-28T19:22:58Z"
 }
