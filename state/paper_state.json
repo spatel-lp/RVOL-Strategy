@@ -46,6 +46,11 @@
    "date": "2026-11-04",
    "equity": 100000.0,
    "cash": 100000.0
+  },
+  {
+   "date": "2026-11-06",
+   "equity": 100000.0,
+   "cash": 100000.0
   }
  ],
  "scan": {
@@ -450,16 +455,16 @@
   "mr": []
  },
  "intraday": {
-  "asof": "2026-11-04T15:41",
+  "asof": "2026-11-06T15:16",
   "checked": []
  },
  "day": {
-  "date": "2026-11-04",
+  "date": "2026-11-06",
   "new_trades": 0
  },
  "last_run": {
   "scan": "2026-10-23",
-  "intraday": "2026-11-04T15:41"
+  "intraday": "2026-11-06T15:16"
  },
  "events": [
   {
@@ -514,6 +519,11 @@
   },
   {
    "t": "2026-11-04T15:41-05:00",
+   "kind": "WARN",
+   "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+  },
+  {
+   "t": "2026-11-06T15:16-05:00",
    "kind": "WARN",
    "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
   }
@@ -1110,6 +1120,10 @@
    {
     "t": "2026-11-04T20:41:39",
     "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+   },
+   {
+    "t": "2026-11-06T20:16:44",
+    "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
    }
   ],
   "mode": "dry-run",
@@ -1128,7 +1142,7 @@
    "mode": "dry-run",
    "note": "dry run: orders are logged, not sent, so positions are not compared"
   },
-  "asof": "2026-11-04T20:41:39",
+  "asof": "2026-11-06T20:16:44",
   "seq": 0
  },
  "returns": {
@@ -1286,5 +1300,5 @@
   "avg_mae_r": null,
   "capture_ratio": null
  },
- "updated": "2026-11-04T20:41:39Z"
+ "updated": "2026-11-06T20:16:44Z"
 }
