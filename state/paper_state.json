@@ -51,6 +51,11 @@
    "date": "2026-11-06",
    "equity": 100000.0,
    "cash": 100000.0
+  },
+  {
+   "date": "2026-11-10",
+   "equity": 100000.0,
+   "cash": 100000.0
   }
  ],
  "scan": {
@@ -257,16 +262,23 @@
   "mr": []
  },
  "intraday": {
-  "asof": "2026-11-06T15:16",
-  "checked": []
+  "asof": "2026-11-10T15:43",
+  "checked": [
+   {
+    "symbol": "NCLH",
+    "passed": false,
+    "reason": "Price still below ORH"
+   }
+  ]
  },
  "day": {
-  "date": "2026-11-06",
-  "new_trades": 0
+  "date": "2026-11-10",
+  "new_trades": 0,
+  "regime_noted": "2026-11-10"
  },
  "last_run": {
   "scan": "2026-11-06",
-  "intraday": "2026-11-06T15:16"
+  "intraday": "2026-11-10T15:43"
  },
  "events": [
   {
@@ -343,10 +355,21 @@
    "t": "2026-11-06T19:21-05:00",
    "kind": "DIGEST",
    "msg": "2026-11-06 close: equity $100,000 (+0.00%), 0 open. Regime risk-off (x0). Focus: NCLH."
+  },
+  {
+   "t": "2026-11-10T15:43-05:00",
+   "kind": "WARN",
+   "msg": "new entries paused by the regime gate (risk-off): breadth 21% of names above their 20-MA (< 30%)"
+  },
+  {
+   "t": "2026-11-10T15:43-05:00",
+   "kind": "WARN",
+   "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
   }
  ],
  "alerts": [
-  "Data check, extreme one-day move (split / bad tick?): 1 symbol(s), e.g. XP (2026-10-26 48%)"
+  "Data check, extreme one-day move (split / bad tick?): 1 symbol(s), e.g. XP (2026-10-26 48%)",
+  "Regime gate: risk-off, new-entry risk x0: breadth 21% of names above their 20-MA (< 30%)"
  ],
  "signals": [
   {
@@ -1070,6 +1093,25 @@
    "mfe_atr": null,
    "mae_atr": null,
    "done": false
+  },
+  {
+   "id": "2026-11-10:NCLH:orh_skip",
+   "date": "2026-11-10",
+   "symbol": "NCLH",
+   "kind": "orh_skip",
+   "reason": "price below ORH",
+   "detail": "Price still below ORH",
+   "price": 18.555,
+   "atr": 0.8244,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
   }
  ],
  "datacheck": {
@@ -1170,6 +1212,10 @@
    {
     "t": "2026-11-07T00:21:57",
     "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+   },
+   {
+    "t": "2026-11-10T20:43:29",
+    "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
    }
   ],
   "mode": "dry-run",
@@ -1188,7 +1234,7 @@
    "mode": "dry-run",
    "note": "dry run: orders are logged, not sent, so positions are not compared"
   },
-  "asof": "2026-11-07T00:21:57",
+  "asof": "2026-11-10T20:43:29",
   "seq": 0
  },
  "returns": {
@@ -1346,5 +1392,5 @@
   "avg_mae_r": null,
   "capture_ratio": null
  },
- "updated": "2026-11-07T00:21:57Z"
+ "updated": "2026-11-10T20:43:29Z"
 }
