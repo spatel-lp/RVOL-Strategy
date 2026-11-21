@@ -61,209 +61,124 @@
    "date": "2026-11-13",
    "equity": 100000.0,
    "cash": 100000.0
+  },
+  {
+   "date": "2026-11-20",
+   "equity": 100000.0,
+   "cash": 100000.0
   }
  ],
  "scan": {
-  "date": "2026-11-06",
-  "asof": "2026-11-06T19:21-05:00",
-  "n_universe": 160,
+  "date": "2026-11-20",
+  "asof": "2026-11-20T21:50-05:00",
+  "n_universe": 163,
   "market": [
    {
     "symbol": "SPY",
-    "close": 735.29,
+    "close": 689.81,
     "above_20": false,
     "above_50": false,
-    "ext": -2.7
+    "ext": -4.7
    },
    {
     "symbol": "QQQ",
-    "close": 656.1,
+    "close": 608.45,
     "above_20": false,
     "above_50": false,
-    "ext": -3.8
+    "ext": -4.7
    }
   ],
   "stalk": [
    {
-    "symbol": "SPOT",
-    "score": 0.556,
-    "close": 603.01,
-    "ADR%": 3.6,
-    "RVOL": 1.0,
-    "VCP": 0.63,
-    "ATR_ext": 3.2,
-    "MR": 0.2,
-    "VARS": 94.4,
-    "daily_ok": false,
-    "trend_ok": true,
-    "LEV": "",
-    "mcap_B": 123.4,
-    "sector": "Communication Services",
-    "industry": "Internet Content & Information",
-    "LIN": 0.44,
-    "chop": "choppy trend (R2 0.44 < 0.60)",
-    "ATR": 22.8449,
-    "AvgVol50": 1649976.0,
-    "flag": ""
-   },
-   {
-    "symbol": "TEM",
-    "score": 0.515,
-    "close": 76.05,
-    "ADR%": 8.6,
-    "RVOL": 0.91,
-    "VCP": 0.25,
-    "ATR_ext": 0.8,
-    "MR": 0.05,
-    "VARS": 95.0,
-    "daily_ok": false,
-    "trend_ok": true,
-    "LEV": "",
-    "mcap_B": 14.2,
-    "sector": "Healthcare",
-    "industry": "Health Information Services",
-    "LIN": 0.0,
-    "chop": "choppy trend (R2 0.00 < 0.60)",
-    "ATR": 6.5961,
-    "AvgVol50": 6915626.0,
-    "flag": ""
-   },
-   {
-    "symbol": "EL",
-    "score": 0.503,
-    "close": 110.06,
-    "ADR%": 4.1,
-    "RVOL": 1.16,
-    "VCP": 0.29,
-    "ATR_ext": 2.3,
-    "MR": 0.2,
-    "VARS": 98.8,
-    "daily_ok": false,
-    "trend_ok": true,
-    "LEV": "",
-    "mcap_B": 38.2,
-    "sector": "Consumer Defensive",
-    "industry": "Household & Personal Products",
-    "LIN": 0.69,
-    "chop": "",
-    "ATR": 4.5262,
-    "AvgVol50": 3320252.0,
-    "flag": ""
-   },
-   {
-    "symbol": "HUM",
-    "score": 0.475,
-    "close": 433.74,
-    "ADR%": 3.7,
-    "RVOL": 1.93,
-    "VCP": 0.16,
-    "ATR_ext": 1.9,
-    "MR": 0.4,
-    "VARS": 91.2,
-    "daily_ok": false,
-    "trend_ok": true,
-    "LEV": "",
-    "mcap_B": 50.2,
-    "sector": "Healthcare",
-    "industry": "Healthcare Plans",
-    "LIN": 0.54,
-    "chop": "choppy trend (R2 0.54 < 0.60)",
-    "ATR": 17.1957,
-    "AvgVol50": 1336679.0,
-    "flag": ""
-   },
-   {
-    "symbol": "NCLH",
-    "score": 0.469,
-    "close": 17.92,
-    "ADR%": 4.2,
-    "RVOL": 0.79,
-    "VCP": 0.59,
-    "ATR_ext": 3.4,
-    "MR": 0.2,
-    "VARS": 71.2,
-    "daily_ok": false,
-    "trend_ok": true,
-    "LEV": "",
-    "mcap_B": 8.0,
-    "sector": "Consumer Cyclical",
-    "industry": "Travel Services",
-    "LIN": 0.74,
-    "chop": "",
-    "ATR": 0.8244,
-    "AvgVol50": 20812552.0,
-    "flag": ""
-   },
-   {
-    "symbol": "CRL",
-    "score": 0.462,
-    "close": 337.52,
-    "ADR%": 5.0,
-    "RVOL": 0.97,
-    "VCP": 0.11,
+    "symbol": "APP",
+    "score": 0.572,
+    "close": 348.29,
+    "ADR%": 5.9,
+    "RVOL": 0.88,
+    "VCP": 0.39,
     "ATR_ext": 2.0,
     "MR": 0.0,
-    "VARS": 96.9,
+    "VARS": 95.7,
     "daily_ok": false,
     "trend_ok": false,
     "LEV": "",
-    "mcap_B": 16.8,
-    "sector": "Healthcare",
-    "industry": "Diagnostics & Research",
-    "LIN": 0.75,
-    "chop": "",
-    "ATR": 17.4885,
-    "AvgVol50": 1095540.0,
+    "mcap_B": 129.5,
+    "sector": "Communication Services",
+    "industry": "Advertising Agencies",
+    "LIN": 0.36,
+    "chop": "choppy trend (R2 0.36 < 0.60)",
+    "ATR": 22.4552,
+    "AvgVol50": 5306174.0,
     "flag": ""
    },
    {
-    "symbol": "NXPI",
-    "score": 0.436,
-    "close": 248.29,
-    "ADR%": 4.5,
-    "RVOL": 1.72,
-    "VCP": 0.18,
-    "ATR_ext": 1.1,
-    "MR": 0.0,
-    "VARS": 88.8,
-    "daily_ok": false,
-    "trend_ok": false,
-    "LEV": "",
-    "mcap_B": 66.2,
-    "sector": "Technology",
-    "industry": "Semiconductors",
-    "LIN": 0.48,
-    "chop": "choppy trend (R2 0.48 < 0.60)",
-    "ATR": 11.4244,
-    "AvgVol50": 4135916.0,
-    "flag": ""
-   }
-  ],
-  "focus": [
-   {
-    "symbol": "NCLH",
-    "score": 0.469,
-    "close": 17.92,
-    "ADR%": 4.2,
-    "RVOL": 0.79,
+    "symbol": "TSCO",
+    "score": 0.55,
+    "close": 38.44,
+    "ADR%": 3.6,
+    "RVOL": 0.96,
     "VCP": 0.59,
-    "ATR_ext": 3.4,
+    "ATR_ext": 3.6,
     "MR": 0.2,
-    "VARS": 71.2,
+    "VARS": 96.3,
     "daily_ok": false,
     "trend_ok": true,
     "LEV": "",
-    "mcap_B": 8.0,
+    "mcap_B": 20.2,
     "sector": "Consumer Cyclical",
-    "industry": "Travel Services",
-    "LIN": 0.74,
+    "industry": "Specialty Retail",
+    "LIN": 0.81,
     "chop": "",
-    "ATR": 0.8244,
-    "AvgVol50": 20812552.0,
-    "flag": "",
-    "earn": ""
+    "ATR": 1.3984,
+    "AvgVol50": 12225116.0,
+    "flag": ""
+   },
+   {
+    "symbol": "RKT",
+    "score": 0.534,
+    "close": 13.75,
+    "ADR%": 4.3,
+    "RVOL": 1.33,
+    "VCP": 0.44,
+    "ATR_ext": 2.3,
+    "MR": 0.2,
+    "VARS": 84.6,
+    "daily_ok": false,
+    "trend_ok": false,
+    "LEV": "",
+    "mcap_B": 38.3,
+    "sector": "Financial Services",
+    "industry": "Mortgage Finance",
+    "LIN": 0.56,
+    "chop": "choppy trend (R2 0.56 < 0.60)",
+    "ATR": 0.6192,
+    "AvgVol50": 38582042.0,
+    "flag": ""
+   },
+   {
+    "symbol": "GKOS",
+    "score": 0.407,
+    "close": 237.31,
+    "ADR%": 5.5,
+    "RVOL": 0.81,
+    "VCP": 0.51,
+    "ATR_ext": 5.1,
+    "MR": 0.0,
+    "VARS": 98.1,
+    "daily_ok": false,
+    "trend_ok": false,
+    "LEV": "",
+    "mcap_B": 13.8,
+    "sector": "Healthcare",
+    "industry": "Medical Devices",
+    "LIN": 0.83,
+    "chop": "",
+    "ATR": 11.3707,
+    "AvgVol50": 1346422.0,
+    "flag": ""
    }
   ],
+  "focus": [],
   "mr": []
  },
  "intraday": {
@@ -271,11 +186,11 @@
   "checked": []
  },
  "day": {
-  "date": "2026-11-13",
+  "date": "2026-11-20",
   "new_trades": 0
  },
  "last_run": {
-  "scan": "2026-11-06",
+  "scan": "2026-11-20",
   "intraday": "2026-11-13T15:47"
  },
  "events": [
@@ -368,12 +283,24 @@
    "t": "2026-11-13T15:47-05:00",
    "kind": "WARN",
    "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+  },
+  {
+   "t": "2026-11-20T21:50-05:00",
+   "kind": "WARN",
+   "msg": "Alpaca mirror: reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+  },
+  {
+   "t": "2026-11-20T21:50-05:00",
+   "kind": "SCAN",
+   "msg": "2026-11-20: 4 stalk, 0 focus (none), equity $100,000"
+  },
+  {
+   "t": "2026-11-20T21:50-05:00",
+   "kind": "DIGEST",
+   "msg": "2026-11-20 close: equity $100,000 (+0.00%), 0 open. Regime risk-off (x0). Focus: none."
   }
  ],
- "alerts": [
-  "Data check, extreme one-day move (split / bad tick?): 1 symbol(s), e.g. XP (2026-10-26 48%)",
-  "Focus list is stale (scan date 2026-11-06); no new entries until the next scan."
- ],
+ "alerts": [],
  "signals": [
   {
    "id": "2026-10-23:CTSH:reject",
@@ -898,14 +825,14 @@
    "price": 76.05,
    "atr": 6.5961,
    "fwd": {
-    "1": null,
-    "3": null,
-    "5": null,
-    "10": null
+    "1": 0.11032,
+    "3": 0.04444,
+    "5": -0.05851,
+    "10": -0.28941
    },
-   "mfe_atr": null,
-   "mae_atr": null,
-   "done": false
+   "mfe_atr": 1.471,
+   "mae_atr": -3.455,
+   "done": true
   },
   {
    "id": "2026-11-06:EL:reject",
@@ -917,14 +844,14 @@
    "price": 110.06,
    "atr": 4.5262,
    "fwd": {
-    "1": null,
-    "3": null,
-    "5": null,
-    "10": null
+    "1": 0.02817,
+    "3": 0.02063,
+    "5": 0.01536,
+    "10": -0.09631
    },
-   "mfe_atr": null,
-   "mae_atr": null,
-   "done": false
+   "mfe_atr": 1.155,
+   "mae_atr": -2.395,
+   "done": true
   },
   {
    "id": "2026-11-06:HUM:reject",
@@ -936,14 +863,14 @@
    "price": 433.74,
    "atr": 17.1957,
    "fwd": {
-    "1": null,
-    "3": null,
-    "5": null,
-    "10": null
+    "1": -0.02425,
+    "3": 0.02898,
+    "5": 0.03749,
+    "10": -0.10084
    },
-   "mfe_atr": null,
-   "mae_atr": null,
-   "done": false
+   "mfe_atr": 1.694,
+   "mae_atr": -3.522,
+   "done": true
   },
   {
    "id": "2026-11-06:CRL:reject",
@@ -955,14 +882,14 @@
    "price": 337.52,
    "atr": 17.4885,
    "fwd": {
-    "1": null,
-    "3": null,
-    "5": null,
-    "10": null
+    "1": 0.04687,
+    "3": 0.01532,
+    "5": 0.00133,
+    "10": -0.06874
    },
-   "mfe_atr": null,
-   "mae_atr": null,
-   "done": false
+   "mfe_atr": 1.215,
+   "mae_atr": -1.544,
+   "done": true
   },
   {
    "id": "2026-11-06:NXPI:reject",
@@ -974,14 +901,14 @@
    "price": 248.29,
    "atr": 11.4244,
    "fwd": {
-    "1": null,
-    "3": null,
-    "5": null,
-    "10": null
+    "1": 0.03274,
+    "3": 0.08546,
+    "5": 0.06766,
+    "10": -0.05292
    },
-   "mfe_atr": null,
-   "mae_atr": null,
-   "done": false
+   "mfe_atr": 2.269,
+   "mae_atr": -1.278,
+   "done": true
   },
   {
    "id": "2026-11-06:CNC:reject",
@@ -993,14 +920,14 @@
    "price": 69.74,
    "atr": 3.4424,
    "fwd": {
-    "1": null,
-    "3": null,
-    "5": null,
-    "10": null
+    "1": -0.01721,
+    "3": 0.01061,
+    "5": 0.02194,
+    "10": -0.08546
    },
-   "mfe_atr": null,
-   "mae_atr": null,
-   "done": false
+   "mfe_atr": 1.81,
+   "mae_atr": -1.874,
+   "done": true
   },
   {
    "id": "2026-11-06:CBOE:reject",
@@ -1050,14 +977,14 @@
    "price": 94.62,
    "atr": 4.8204,
    "fwd": {
-    "1": null,
-    "3": null,
-    "5": null,
-    "10": null
+    "1": 0.06944,
+    "3": 0.08011,
+    "5": 0.05686,
+    "10": -0.10949
    },
-   "mfe_atr": null,
-   "mae_atr": null,
-   "done": false
+   "mfe_atr": 2.16,
+   "mae_atr": -2.24,
+   "done": true
   },
   {
    "id": "2026-11-06:CCI:reject",
@@ -1115,15 +1042,110 @@
    "mfe_atr": null,
    "mae_atr": null,
    "done": false
+  },
+  {
+   "id": "2026-11-20:APP:reject",
+   "date": "2026-11-20",
+   "symbol": "APP",
+   "kind": "reject",
+   "reason": "not above 10/20-MA",
+   "detail": "",
+   "price": 348.29,
+   "atr": 22.4552,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
+  },
+  {
+   "id": "2026-11-20:TSCO:reject",
+   "date": "2026-11-20",
+   "symbol": "TSCO",
+   "kind": "reject",
+   "reason": "ADR below minimum",
+   "detail": "",
+   "price": 38.44,
+   "atr": 1.3984,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
+  },
+  {
+   "id": "2026-11-20:RKT:reject",
+   "date": "2026-11-20",
+   "symbol": "RKT",
+   "kind": "reject",
+   "reason": "not above 10/20-MA",
+   "detail": "",
+   "price": 13.75,
+   "atr": 0.6192,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
+  },
+  {
+   "id": "2026-11-20:GKOS:reject",
+   "date": "2026-11-20",
+   "symbol": "GKOS",
+   "kind": "reject",
+   "reason": "not above 10/20-MA",
+   "detail": "",
+   "price": 237.31,
+   "atr": 11.3707,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
+  },
+  {
+   "id": "2026-11-20:TTWO:reject",
+   "date": "2026-11-20",
+   "symbol": "TTWO",
+   "kind": "reject",
+   "reason": "not above 10/20-MA",
+   "detail": "",
+   "price": 210.0,
+   "atr": 12.0563,
+   "fwd": {
+    "1": null,
+    "3": null,
+    "5": null,
+    "10": null
+   },
+   "mfe_atr": null,
+   "mae_atr": null,
+   "done": false
   }
  ],
  "datacheck": {
-  "asof": "2026-11-06T19:21-05:00",
+  "asof": "2026-11-20T21:50-05:00",
   "sanity": {
-   "extreme one-day move (split / bad tick?)": {
+   "stale last bar": {
     "count": 1,
     "examples": [
-     "XP (2026-10-26 48%)"
+     "SNDK (2026-11-19)"
     ]
    }
   },
@@ -1136,22 +1158,22 @@
     "AAOI",
     "AAPU",
     "ACN",
+    "ADI",
     "AKAM",
     "ALAB",
     "AMAT",
     "AMD",
     "AMDL",
-    "ANET",
-    "APLD"
+    "ANET"
    ]
   },
-  "last_crosscheck": "2026-11-06",
+  "last_crosscheck": "2026-11-20",
   "earnings_unknown": []
  },
  "universe": {
   "source": "rules",
-  "date": "2026-11-03",
-  "n": 168,
+  "date": "2026-11-18",
+  "n": 169,
   "note": "cached snapshot"
  },
  "exit_lab": {},
@@ -1159,21 +1181,21 @@
   "label": "risk-off",
   "mult": 0.0,
   "reasons": [
-   "breadth 21% of names above their 20-MA (< 30%)"
+   "breadth 4% of names above their 20-MA (< 30%)"
   ],
-  "pct20": 20.6,
-  "pct50": 21.2,
-  "net_hl": -11.9,
-  "n": 160,
+  "pct20": 4.3,
+  "pct50": 6.2,
+  "net_hl": -69.1,
+  "n": 162,
   "spy": {
    "above20": false,
    "above50": false,
-   "ext": -2.73,
-   "streak": 1,
-   "close": 735.29
+   "ext": -4.69,
+   "streak": 0,
+   "close": 689.81
   },
-  "date": "2026-11-06",
-  "asof": "2026-11-06T19:21-05:00"
+  "date": "2026-11-20",
+  "asof": "2026-11-20T21:50-05:00"
  },
  "broker": {
   "orders": {},
@@ -1223,6 +1245,10 @@
    {
     "t": "2026-11-13T20:47:18",
     "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
+   },
+   {
+    "t": "2026-11-21T02:50:53",
+    "msg": "reconcile: BrokerError: GET /v2/account -> 401: {'message': 'unauthorized.'}"
    }
   ],
   "mode": "dry-run",
@@ -1241,136 +1267,12 @@
    "mode": "dry-run",
    "note": "dry run: orders are logged, not sent, so positions are not compared"
   },
-  "asof": "2026-11-13T20:47:18",
+  "asof": "2026-11-21T02:50:53",
   "seq": 0
  },
  "returns": {
-  "dates": [
-   "2026-08-14",
-   "2026-08-17",
-   "2026-08-18",
-   "2026-08-19",
-   "2026-08-20",
-   "2026-08-21",
-   "2026-08-24",
-   "2026-08-25",
-   "2026-08-26",
-   "2026-08-27",
-   "2026-08-28",
-   "2026-08-31",
-   "2026-09-01",
-   "2026-09-02",
-   "2026-09-03",
-   "2026-09-04",
-   "2026-09-08",
-   "2026-09-09",
-   "2026-09-10",
-   "2026-09-11",
-   "2026-09-14",
-   "2026-09-15",
-   "2026-09-16",
-   "2026-09-17",
-   "2026-09-18",
-   "2026-09-21",
-   "2026-09-22",
-   "2026-09-23",
-   "2026-09-24",
-   "2026-09-25",
-   "2026-09-28",
-   "2026-09-29",
-   "2026-09-30",
-   "2026-10-01",
-   "2026-10-02",
-   "2026-10-05",
-   "2026-10-06",
-   "2026-10-07",
-   "2026-10-08",
-   "2026-10-09",
-   "2026-10-12",
-   "2026-10-13",
-   "2026-10-14",
-   "2026-10-15",
-   "2026-10-16",
-   "2026-10-19",
-   "2026-10-20",
-   "2026-10-21",
-   "2026-10-22",
-   "2026-10-23",
-   "2026-10-26",
-   "2026-10-27",
-   "2026-10-28",
-   "2026-10-29",
-   "2026-10-30",
-   "2026-11-02",
-   "2026-11-03",
-   "2026-11-04",
-   "2026-11-05",
-   "2026-11-06"
-  ],
-  "series": {
-   "NCLH": [
-    -0.02762,
-    -0.04366,
-    -0.03135,
-    -0.01533,
-    -0.03403,
-    0.02925,
-    -0.00116,
-    0.00232,
-    -0.00985,
-    -0.02575,
-    0.0,
-    -0.03063,
-    -0.04399,
-    0.00907,
-    0.00128,
-    -0.00128,
-    -0.01156,
-    -0.03509,
-    -0.01886,
-    0.01716,
-    -0.00675,
-    -0.02989,
-    0.01751,
-    -0.00964,
-    -0.01876,
-    0.0085,
-    -0.0014,
-    -0.00281,
-    0.00071,
-    0.0296,
-    -0.02053,
-    0.03424,
-    -0.00946,
-    -0.00136,
-    0.03415,
-    -0.01783,
-    0.04304,
-    -0.02966,
-    0.02924,
-    0.00516,
-    -0.01413,
-    -0.00195,
-    -0.02937,
-    0.03497,
-    -0.02209,
-    0.01262,
-    0.0269,
-    -0.00383,
-    -0.00321,
-    -0.02831,
-    0.00993,
-    0.03279,
-    0.01968,
-    0.1345,
-    -0.03568,
-    0.02106,
-    -0.02899,
-    0.06774,
-    -0.04516,
-    0.00901
-   ]
-  }
+  "dates": [],
+  "series": {}
  },
  "summary": {
   "equity": 100000.0,
@@ -1399,5 +1301,5 @@
   "avg_mae_r": null,
   "capture_ratio": null
  },
- "updated": "2026-11-13T20:47:18Z"
+ "updated": "2026-11-21T02:50:54Z"
 }
